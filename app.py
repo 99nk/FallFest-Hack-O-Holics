@@ -6,6 +6,7 @@ import glob
 import re
 import numpy as np
 import torch
+from flask import jsonify
 from PIL import Image
 import albumentations as aug
 from six.moves import urllib
