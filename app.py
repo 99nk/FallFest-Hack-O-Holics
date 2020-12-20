@@ -8,6 +8,7 @@ import numpy as np
 import torch
 from PIL import Image
 import albumentations as aug
+from six.moves import urllib
 from efficientnet_pytorch import EfficientNet
 
 # Flask utils
