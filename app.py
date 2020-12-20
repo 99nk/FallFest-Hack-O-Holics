@@ -51,17 +51,28 @@ def profile():
     return render_template('profile.html')
 
 @app.route('/predict', methods=['POST'])
+def upload1():
+    # Get the file from post request
+    f = request.files['file']
+    labs=['MELANOMA (MALIGNANT)', 'MELANOCYTIC NEVUS (BENIGN)/ NORMAL SKIN /RASH', 'BASAL CELL CARCINOMA (BENIGN)', 'ACTINIC KERATOSIS (BENIGN)', 'BENIGN KERATOSIS (BENIGN)', 'DERMATOFIBROMA (NON CANCEROUS-BENIGN)', 'VASCULAR LESION (MAYBE BENIGN MAYBE MALIGNANT)', 'SQUAMOUS CELL CARCINOMA(MALIGNANT)']
+    # Make prediction
+    preds = model_predict(f, model)
+    result = labs[preds]
+    return result
+
+@app.route('/predict1', methods=['POST'])
 def upload():
     # Get the file from post request
-    skin_lesion=request.get_json()
-    image_url=skin_lesion['url']
-    print(image_url)
-    save_image(image_url)
-    labs= ['MELANOMA', 'MELANOCYTIC NEVUS', 'BASAL CELL CARCINOMA', 'ACTINIC KERATOSIS', 'BENIGN KERATOSIS', 'DERMATOFIBROMA', 'VASCULAR LESION', 'SQUAMOUS CELL CARCINOMA']
-    preds = model_predict(image_url, model)
-    result = labs[preds]
+    if request.method =='POST':
+        skin_lesion=request.get_json()
+        image_url=skin_lesion['url']
+        urllib.request.urlretrieve(image_url, "sample.png")
+        labs=['MELANOMA (MALIGNANT)', 'MELANOCYTIC NEVUS (BENIGN)/ NORMAL SKIN /RASH', 'BASAL CELL CARCINOMA (BENIGN)', 'ACTINIC KERATOSIS (BENIGN)', 'BENIGN KERATOSIS (BENIGN)', 'DERMATOFIBROMA (NON CANCEROUS-BENIGN)', 'VASCULAR LESION (MAYBE BENIGN MAYBE MALIGNANT)', 'SQUAMOUS CELL CARCINOMA(MALIGNANT)']
+        preds = model_predict("sample.png", model)
+        result = labs[preds]         
+    # Make prediction   
     return jsonify({'result':result})
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host="0.0.0.0",port=8080,debug=True)
